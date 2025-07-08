@@ -1,4 +1,4 @@
-import { arrayToBigInt, poseidonFunc } from '@railgun-reloaded/cryptography'
+import { arrayToBigInt, bytesToHex, poseidonFunc } from '@railgun-reloaded/cryptography'
 
 import { arrayToByteLength, bigIntToArray } from './bytes'
 import { ZERO_HASH_BIGINT } from './constants'
@@ -293,42 +293,26 @@ class MerkleTree {
   }
 
   /**
-   * Validates merkle proof
-   * @param proof - proof to validate
-   * @returns isValid
+   * Validates a Merkle proof by reconstructing the root hash from the provided proof elements
+   * and comparing it to the expected root hash.
+   * @param proof - The Merkle proof object containing the indices, elements, and other necessary data.
+   *                - `indices`: A binary representation indicating the position of each element in the proof.
+   *                - `elements`: An array of hex-encoded strings representing the proof elements.
+   * @returns `true` if the proof is valid and the reconstructed root matches the expected root; otherwise, `false`.
    */
   static validateProof (proof: MerkleProof): boolean {
     // Parse indices into binary string
-    const indices = proof.indices
-      .toString(2)
-      .padStart(proof.elements.length, '0')
-      .split('')
-      .reverse()
-
+    const indices = BigInt(proof.indices)
     // Initial currentHash value is the element we're proving membership for
-    let currentHash = proof.element
-
-    // Loop though each proof level and hash together
-    for (let i = 0; i < proof.elements.length; i += 1) {
-      if (indices[i] === '0') {
-        currentHash = MerkleTree.hashLeftRight(
-          currentHash,
-          // TODO: remove this
-          // @ts-expect-error
-          proof.elements[i]
-        )
-      } else if (indices[i] === '1') {
-        currentHash = MerkleTree.hashLeftRight(
-          // TODO: remove this
-          // @ts-expect-error
-          proof.elements[i],
-          currentHash
-        )
+    const calculatedRoot = proof.elements.reduce((current, element, index): Uint8Array => {
+      // If index is right
+      if ((indices & (2n ** BigInt(index))) > 0n) {
+        return MerkleTree.hashLeftRight(element, current)
       }
-    }
+      return MerkleTree.hashLeftRight(current, element)
+    }, proof.element)
 
-    // Return true if result is equal to merkle root
-    return currentHash === proof.root
+    return bytesToHex(proof.root) === bytesToHex(calculatedRoot)
   }
 }
 

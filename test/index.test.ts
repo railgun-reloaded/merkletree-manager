@@ -80,6 +80,7 @@ describe('Importing library', () => {
       indices: proof.indices,
       root: bytesToHex(proof.root)
     }
+
     assert.deepStrictEqual(formatted, {
       element: '10',
       elements: [
@@ -103,5 +104,6 @@ describe('Importing library', () => {
       indices: 3,
       root: '215b6e027da417c086db7e55d19c6d2cc270a0c2d54a2b2cd9ae8d40d0c250b3',
     })
+    assert(MerkleTree.validateProof(proof), 'Invalid merkle proof.')
   })
 })
