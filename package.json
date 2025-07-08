@@ -1,7 +1,7 @@
 {
   "name": "@railgun-reloaded/merkletree-manager",
   "version": "0.0.1",
-  "description": "MerkleTree Manager",
+  "description": "Implementation of management & merkletrees used in RAILGUN.",
   "main": "src/index.js",
   "scripts": {
     "build": "npm run lint:fix && tsc --build",
@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix",
     "pretest": "npm run build",
     "test": "npx mocha ./test/**/*.test.js",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",

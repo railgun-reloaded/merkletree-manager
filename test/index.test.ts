@@ -5,7 +5,7 @@ import { bytesToHex, hexToBytes } from '@railgun-reloaded/cryptography'
 
 import { MerkleTree } from '../src'
 
-describe('Importing library', () => {
+describe('MerkleTree', () => {
   let testTree: MerkleTree
   beforeEach(() => {
     testTree = MerkleTree.createTree(0, 16)
