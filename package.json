@@ -1,0 +1,31 @@
+{
+  "name": "@railgun-reloaded/merkletree-manager",
+  "version": "0.0.0",
+  "description": "TODO",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "pretest": "npm run build",
+    "test": "exit 1",
+    "prepack": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://git@github.com/railgun-reloaded/merkletree-manager.git"
+  },
+  "keywords": [],
+  "author": "RAILGUN Project Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/railgun-reloaded/merkletree-manager/issues"
+  },
+  "homepage": "https://github.com/railgun-reloaded/merkletree-manager#readme",
+  "devDependencies": {
+    "@railgun-reloaded/eslint-config": "^1.1.0",
+    "@railgun-reloaded/tsconfig": "^1.2.0",
+    "eslint": "^9.24.0",
+    "typescript": "^5.8.3"
+  }
+}
