@@ -1,5 +1,5 @@
 {
   "extends": [
-    "@railgun-reloaded/tsconfig"
+    "@railgun-reloaded/tsconfig/"
   ]
 }
