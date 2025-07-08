@@ -26,11 +26,11 @@ interface MerkleProof {
  * ```typescript
  * const depth = 16;
  * const treeNumber = 0;
- * const merkleTree = await MerkleTree.createTree(treeNumber, depth);
+ * const merkleTree = MerkleTree.createTree(treeNumber, depth);
  * const leaves = [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])];
- * await merkleTree.insertLeaves(leaves, 0);
+ * merkleTree.insertLeaves(leaves, 0);
  * const proof = merkleTree.generateProof(leaves[0]);
- * const isValid = await MerkleTree.validateProof(proof);
+ * const isValid = MerkleTree.validateProof(proof);
  * console.log(`Proof is valid: ${isValid}`);
  * ```
  */
@@ -143,7 +143,7 @@ class MerkleTree {
    * @param depth - depth of tree
    * @returns zero values for each level
    */
-  static async getZeroValueLevels (depth: number): Promise<Uint8Array[]> {
+  static getZeroValueLevels (depth: number): Uint8Array[] {
     // Initialize empty array for levels
     const levels: Uint8Array[] = []
 
@@ -156,7 +156,7 @@ class MerkleTree {
       levels.push(
         // TODO: remove this
         // @ts-expect-error
-        await MerkleTree.hashLeftRight(levels[level - 1], levels[level - 1])
+        MerkleTree.hashLeftRight(levels[level - 1], levels[level - 1])
       )
     }
 
@@ -173,12 +173,12 @@ class MerkleTree {
    * - The `tree` array is initialized with empty arrays for each level, except for the deepest level, which is populated with the root value.
    * - If `fromTree` is provided, its root is used for the deepest level; otherwise, a new root is computed using the zero values.
    */
-  static async createTree (
+  static createTree (
     treeNumber = 0,
     depth = 16,
     fromTree?: MerkleTree
-  ): Promise<MerkleTree> {
-    const zeros: Uint8Array[] = await MerkleTree.getZeroValueLevels(depth)
+  ): MerkleTree {
+    const zeros: Uint8Array[] = MerkleTree.getZeroValueLevels(depth)
     const tree: Uint8Array[][] = Array(depth)
       .fill(0)
       .map(() => [])
@@ -186,7 +186,7 @@ class MerkleTree {
       // TODO: remove this
       fromTree?.root ??
       // @ts-expect-error
-      (await MerkleTree.hashLeftRight(zeros[depth - 1], zeros[depth - 1])),
+      (MerkleTree.hashLeftRight(zeros[depth - 1], zeros[depth - 1])),
     ]
 
     return new MerkleTree(treeNumber, depth, zeros, tree)
@@ -298,7 +298,7 @@ class MerkleTree {
    * @param proof - proof to validate
    * @returns isValid
    */
-  static async validateProof (proof: MerkleProof): Promise<boolean> {
+  static validateProof (proof: MerkleProof): boolean {
     // Parse indices into binary string
     const indices = proof.indices
       .toString(2)
@@ -312,14 +312,14 @@ class MerkleTree {
     // Loop though each proof level and hash together
     for (let i = 0; i < proof.elements.length; i += 1) {
       if (indices[i] === '0') {
-        currentHash = await MerkleTree.hashLeftRight(
+        currentHash = MerkleTree.hashLeftRight(
           currentHash,
           // TODO: remove this
           // @ts-expect-error
           proof.elements[i]
         )
       } else if (indices[i] === '1') {
-        currentHash = await MerkleTree.hashLeftRight(
+        currentHash = MerkleTree.hashLeftRight(
           // TODO: remove this
           // @ts-expect-error
           proof.elements[i],
