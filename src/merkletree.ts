@@ -223,9 +223,8 @@ class MerkleTree {
    * Inserts leaves into tree
    * @param leaves - array of leaves to add
    * @param startPosition - position to start inserting leaves from
-   * @returns complete
    */
-  async insertLeaves (leaves: Uint8Array[], startPosition: number) {
+  insertLeaves (leaves: Uint8Array[], startPosition: number) {
     if (leaves.length === 0) {
       return
     }
