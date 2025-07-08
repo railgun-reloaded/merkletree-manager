@@ -86,11 +86,6 @@ export class MerkleHelper {
       this.treeDepth,
       this.currentTree
     )
-    // TODO: check if the merkleroot of the first tree, gets set as the initial seed of the 'next' tree...?
-    // const root = this.currentTree.root;
-    // Set the root of the new tree to the root of the current tree
-    // newTree.root = root;
-    // newTree.insertLeaves([root], 0);
     this.trees.push(newTree)
     this.currentTreeIndex = nextTreeNumber
   }
@@ -130,14 +125,10 @@ export class MerkleHelper {
       }
       console.log('CREATING NEW TREE')
       // Remove the inserted leaves from the original array
-      // console.log(this.currentTree.length, leaves.length);
       const newLeaves = leaves.slice(remainingLeaves)
       //  Create a new tree
-      // TODO: check if the merkleroot of the first tree, gets set as the initial seed of the 'next' tree...?
-      // if so, we should do that when creating the tree
       // Rebuild current tree first
       this.finalizeTree()
-      // await this.currentTree.rebuildSparseTree();
       this.createNextTree()
       // Insert the remaining leaves into the new tree
       this.currentTree.insertLeaves(newLeaves, 0)
