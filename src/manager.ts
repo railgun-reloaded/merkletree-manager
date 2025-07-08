@@ -66,7 +66,6 @@ export class MerkleManager {
       throw new Error('Nullifier already exists')
     }
     this.nullifiers.add(nullifier)
-    // console.log("Nullifier added");
   }
 
   /**
