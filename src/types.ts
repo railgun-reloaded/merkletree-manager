@@ -39,9 +39,25 @@ type BoundParams = {
   commitmentCiphertext: CommitmentCiphertext[];
 }
 
+enum TokenType {
+  ERC20 = 0,
+  ERC721 = 1,
+  ERC1155 = 2,
+}
+
+interface TokenData {
+  tokenType: TokenType;
+  tokenAddress: string;
+  tokenSubID: string;
+}
+
 export type {
   BoundParams,
   CipherText,
   CommitmentCiphertext,
   SnarkProof,
+  TokenData
+}
+export {
+  TokenType
 }

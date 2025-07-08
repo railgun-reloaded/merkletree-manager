@@ -195,7 +195,7 @@
 
 "@railgun-reloaded/cryptography@https://github.com/railgun-reloaded/cryptography":
   version "0.0.1"
-  resolved "https://github.com/railgun-reloaded/cryptography#31a9f3c9d07cafdd6de24851c88efe13e40c537a"
+  resolved "https://github.com/railgun-reloaded/cryptography#889558e1623d27edff474b076de4110efccb209f"
   dependencies:
     "@noble/hashes" "^1.8.0"
     poseidon-lite "^0.3.0"
