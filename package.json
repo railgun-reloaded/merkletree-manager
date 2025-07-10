@@ -11,7 +11,7 @@
     "pretest": "npm run build",
     "test": "npx mocha ./test/**/*.test.js",
     "prepack": "npm run build",
-    "postinstall": "cd ./node_modules/@railgun-reloaded/cryptography && npm install && npx patch-package && cd ../../.. && npm run build"
+    "postinstall": "cd ./node_modules/@railgun-reloaded/cryptography && npm install && npx patch-package && npm run build && cd ../../.. && npm run build"
   },
   "repository": {
     "type": "git",
