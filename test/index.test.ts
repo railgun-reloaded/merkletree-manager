@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { beforeEach, describe, it } from 'node:test'
 
-import { bytesToHex, hexToBytes } from '@railgun-reloaded/cryptography'
+import { bytesToHex, hexToBytes } from '@railgun-reloaded/bytes'
 
 import { MerkleTree } from '../src'
 
@@ -33,8 +33,8 @@ describe('MerkleTree', () => {
       '08c5bd0f85cef2f8c3c1412a2b69ee943c6925ecf79798bb2b84e1b76d26871f',
       '27f7c465045e0a4d8bec7c13e41d793734c50006ca08920732ce8c3096261435',
     ]
-    assert.deepStrictEqual(testTree.zeros.map(bytesToHex), testVector)
-    assert.deepStrictEqual(testTree.zeros, testVector.map(hexToBytes))
+    assert.deepStrictEqual(testTree.zeros.map((b) => bytesToHex(b)), testVector)
+    assert.deepStrictEqual(testTree.zeros, testVector.map((h) => hexToBytes(h)))
   })
 
   it('should hash left/right.', () => {
@@ -76,7 +76,7 @@ describe('MerkleTree', () => {
 
     const formatted = {
       element: bytesToHex(proof.element),
-      elements: proof.elements.map(bytesToHex),
+      elements: proof.elements.map((b) => bytesToHex(b)),
       indices: proof.indices,
       root: bytesToHex(proof.root)
     }

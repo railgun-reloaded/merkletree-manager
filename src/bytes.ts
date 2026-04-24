@@ -1,128 +1,34 @@
-// COPY PASTE WHERE NEEDED FOR NOW
+import { bigIntToBytes, bytesToBigInt } from '@railgun-reloaded/bytes'
 
 /**
- * Left pads byte array to length
- * @param byteArray - byte array to pad
- * @param length - length of new array
- * @returns padded array
+ * Left-pads a byte array to the requested length. Throws if the input is
+ * already longer than the target length (unlike
+ * `@railgun-reloaded/bytes#padBytesLeft`, which returns the input unchanged
+ * when it is already at or above the target).
+ * @param byteArray - Byte array to pad.
+ * @param length - Target length in bytes.
+ * @returns Byte array of exactly `length` bytes, zero-padded on the left.
+ * @throws If `byteArray.length > length`.
  */
 const arrayToByteLength = (byteArray: Uint8Array, length: number): Uint8Array => {
-  // Check the length of array requested is large enough to accommodate the original array
   if (byteArray.length > length) { throw new Error('BigInt byte size is larger than length') }
 
-  // Create Uint8Array of requested length
   return new Uint8Array(
     new Array(length - byteArray.length).concat(...byteArray)
   )
 }
 
 /**
- * Convert typed byte array to bigint
- * @param array - Array to convert
- * @returns bigint
- */
-const arrayToBigInt = (array: Uint8Array): bigint => {
-  // Initialize result as 0
-  let result = 0n
-
-  // Loop through each element in the array
-  array.forEach((element) => {
-    // Shift result bits left by 1 byte
-    result = result << 8n
-
-    // Add element to result, filling the last bit positions
-    result += BigInt(element)
-  })
-  return result
-}
-
-/**
- * Convert bigint to byte array
- * @param bn - bigint
- * @param length - length of resulting byte array, 0 to return byte length of integer
- * @returns byte array
- */
-const bigIntToArray = (bn: bigint, length: number): Uint8Array => {
-  // Convert bigint to hex string
-  let hex = BigInt(bn).toString(16)
-
-  // If hex is odd length then add leading zero
-  if (hex.length % 2) hex = `0${hex}`
-
-  // Split into groups of 2 to create hex array
-  const hexArray = hex.match(/.{2}/g) ?? []
-
-  // Convert hex array to uint8 byte array
-  const byteArray = new Uint8Array(hexArray.map((byte) => parseInt(byte, 16)))
-
-  return arrayToByteLength(byteArray, length)
-}
-
-/**
- * Convert byte array to hex string
- * @param array - byte array
- * @param prefix - prefix with 0x
- * @returns hex string
- */
-const arrayToHexString = (array: Uint8Array, prefix: boolean) => {
-  // Create empty hex string
-  let hexString = ''
-
-  // Loop through each byte of array
-  array.forEach((byte) => {
-    // Convert integer representation to base 16
-    let hexByte = byte.toString(16)
-
-    // Ensure 2 chars
-    hexByte = hexByte.length === 1 ? '0' + hexByte : hexByte
-
-    // Append to hexString
-    hexString += hexByte
-  })
-
-  // Prefix if needed
-  return prefix ? `0x${hexString}` : hexString
-}
-
-/**
- * Convert hex string to byte array
- * @param hexString - hex string
- * @returns byte array
- */
-const hexStringToArray = (hexString: string) => {
-  // Strip leading 0x if present
-  const hexStringFormatted = hexString.startsWith('0x')
-    ? hexString.slice(2)
-    : hexString
-
-  // Create empty array
-  const array = new Uint8Array(hexStringFormatted.length / 2)
-
-  // Fetch matching byte index from hex string and parse to integer
-  array.map(
-    (_element, index) =>
-      (array[index] = parseInt(
-        hexStringFormatted.substring(index * 2, index * 2 + 2),
-        16
-      ))
-  )
-
-  return array
-}
-
-/**
- * Split bytes into array of chunks
- * @param data - data to chunk
- * @param size - size of chunks
- * @returns chunked data
+ * Splits a byte array into fixed-size chunks.
+ * @param data - Byte array to split.
+ * @param size - Chunk size in bytes.
+ * @returns Array of chunk byte arrays. The final chunk may be shorter than
+ * `size` if `data.length` is not a multiple of `size`.
  */
 const chunk = (data: Uint8Array, size: number): Uint8Array[] => {
-  // Define chunks array
   const chunks: Uint8Array[] = []
 
-  // Loop through data array
   for (let i = 0; i < data.length; i += size) {
-    // Slice chunk
     chunks.push(data.slice(i, i + size))
   }
 
@@ -130,34 +36,31 @@ const chunk = (data: Uint8Array, size: number): Uint8Array[] => {
 }
 
 /**
- * Combines Uint8Array chunks
- * @param chunks - chunks to combine
- * @returns combined data
+ * Concatenates a list of byte arrays end-to-end.
+ * @param chunks - Byte arrays to concatenate.
+ * @returns A single byte array containing every input in order.
  */
 const combine = (chunks: Uint8Array[]): Uint8Array => {
   return chunks.reduce((left, right) => new Uint8Array([...left, ...right]))
 }
 
 /**
- * Pads bytes to length
- * @param data - bytes to pad
- * @param length - length to pad to
- * @param side - side to add padding
- * @returns padded data
+ * Pads a byte array to a target length by adding zero bytes on the specified side.
+ * @param data - Byte array to pad.
+ * @param length - Target length in bytes; must be greater than or equal to `data.length`.
+ * @param side - Side to pad on.
+ * @returns Byte array of exactly `length` bytes.
  */
 const padToLength = (
   data: Uint8Array,
   length: number,
   side: 'left' | 'right'
 ): Uint8Array => {
-  // Calculate amount of padding needed
   const slack = length - data.length
 
   if (side === 'left') {
-    // If padding is on left side, create new Uint8Array with 0 filled left
     return new Uint8Array([...new Uint8Array(slack), ...data])
   } else {
-    // If padding is on right side, create new Uint8Array with 0 filled right
     return new Uint8Array([...data, ...new Uint8Array(slack)])
   }
 }
@@ -166,60 +69,46 @@ const railgunBase37 = {
   CHARSET: ' 0123456789abcdefghijklmnopqrstuvwxyz',
 
   /**
-   * Railgun-base37 encodes text
-   * @param text - text to encode
-   * @returns encoded bytes
+   * Encodes text as a 16-byte big-endian integer using RAILGUN's base-37 charset.
+   * @param text - Text to encode. Each character must be present in `CHARSET`.
+   * @returns 16-byte encoded value.
+   * @throws If `text` contains a character not in `CHARSET`.
    */
   encode (text: string): Uint8Array {
-    // Initialize output in base10
     let outputNumber = 0n
 
-    // Calculate number system base
     const base = BigInt(railgunBase37.CHARSET.length)
 
-    // Loop through each char from least significant to most
     for (let i = 0; i < text.length; i += 1) {
-      // Get decimal value of char
       const charIndex = railgunBase37.CHARSET.indexOf(text[i]!)
 
-      // Throw if char is invalid
       if (charIndex === -1) throw new Error(`Invalid character: ${text[i]}`)
 
-      // Calculate positional multiplier for char
       const positional = base ** BigInt(text.length - i - 1)
 
-      // Add char value to decimal
       outputNumber += BigInt(charIndex) * positional
     }
 
-    // Convert base 10 to 16 byte array
-    return bigIntToArray(outputNumber, 16)
+    return bigIntToBytes(outputNumber, 16)
   },
 
   /**
-   * Decodes Railgun-base37 encoded bytes
-   * @param bytes - bytes to decode
-   * @returns text
+   * Decodes RAILGUN base-37 encoded bytes back into text.
+   * @param bytes - Encoded bytes to decode.
+   * @returns Decoded text.
    */
   decode (bytes: Uint8Array): string {
-    // Initialize output string
     let output = ''
 
-    // Convert input to number
-    let inputNumber = arrayToBigInt(bytes)
+    let inputNumber = bytesToBigInt(bytes)
 
-    // Calculate number system base
     const base = BigInt(railgunBase37.CHARSET.length)
 
-    // Loop through input number it is the last positional
     while (inputNumber > 0) {
-      // Calculate last positional value
       const remainder = inputNumber % base
 
-      // Add last positional value to start of string
       output = `${railgunBase37.CHARSET[Number(remainder)]}${output}`
 
-      // Subtract last positional value and shift right 1 position
       inputNumber = (inputNumber - remainder) / base
     }
 
@@ -228,19 +117,18 @@ const railgunBase37 = {
 }
 
 /**
- * Converts utf8 bytes to string
- * @param data - bytes to decode
- * @returns decoded string
+ * Decodes UTF-8 bytes into a string.
+ * @param data - Byte array to decode.
+ * @returns The decoded UTF-8 string.
  */
 const toUTF8String = (data: Uint8Array): string => {
-  const string = new TextDecoder().decode(data)
-  return string
+  return new TextDecoder().decode(data)
 }
 
 /**
- * Converts string to bytes
- * @param string - string to convert to bytes
- * @returns encoded bytes
+ * Encodes a string as UTF-8 bytes.
+ * @param string - String to encode.
+ * @returns The UTF-8 encoded byte array.
  */
 const fromUTF8String = (string: string): Uint8Array => {
   return new TextEncoder().encode(string)
@@ -252,14 +140,10 @@ const SNARK_SCALAR_FIELD =
 export {
   SNARK_SCALAR_FIELD,
   arrayToByteLength,
-  arrayToBigInt,
-  bigIntToArray,
-  arrayToHexString,
-  hexStringToArray,
   chunk,
   combine,
+  fromUTF8String,
   padToLength,
   railgunBase37,
   toUTF8String,
-  fromUTF8String,
 }

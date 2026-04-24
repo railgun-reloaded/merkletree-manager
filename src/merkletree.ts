@@ -1,6 +1,7 @@
-import { arrayToBigInt, bytesToHex, poseidonFunc } from '@railgun-reloaded/cryptography'
+import { bigIntToBytes, bytesToBigInt, bytesToHex } from '@railgun-reloaded/bytes'
+import { poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { arrayToByteLength, bigIntToArray } from './bytes'
+import { arrayToByteLength } from './bytes'
 import { ZERO_HASH_BIGINT } from './constants'
 
 interface MerkleProof {
@@ -135,7 +136,7 @@ class MerkleTree {
    */
   static get zeroValue (): Uint8Array {
     const railgunHash = ZERO_HASH_BIGINT
-    return bigIntToArray(railgunHash, 32)
+    return bigIntToBytes(railgunHash, 32)
   }
 
   /**
@@ -254,13 +255,13 @@ class MerkleTree {
     // TODO: remove this
     // @ts-expect-error
     const initialIndex = this.tree[0]
-      .map(arrayToBigInt)
-      .indexOf(arrayToBigInt(element))
+      .map(bytesToBigInt)
+      .indexOf(bytesToBigInt(element))
     let index = initialIndex
 
     if (index === -1) {
       throw new Error(
-        `Couldn't find ${arrayToBigInt(element)} in the MerkleTree`
+        `Couldn't find ${bytesToBigInt(element)} in the MerkleTree`
       )
     }
 

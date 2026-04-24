@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/railgun-reloaded/merkletree-manager#readme",
   "dependencies": {
+    "@railgun-reloaded/bytes": "file:../bytes",
     "@railgun-reloaded/cryptography": "https://github.com/railgun-reloaded/cryptography",
     "@types/node": "^24.0.11"
   },

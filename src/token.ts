@@ -1,6 +1,7 @@
-import { arrayToBigInt, keccak256, poseidonFunc } from '@railgun-reloaded/cryptography'
+import { bigIntToBytes, bytesToBigInt, hexToBytes } from '@railgun-reloaded/bytes'
+import { keccak256, poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { SNARK_SCALAR_FIELD, arrayToByteLength, bigIntToArray, combine, hexStringToArray, padToLength } from './bytes'
+import { SNARK_SCALAR_FIELD, arrayToByteLength, combine, padToLength } from './bytes'
 import type { TokenData } from './types'
 import { TokenType } from './types'
 
@@ -17,17 +18,17 @@ import { TokenType } from './types'
 const getTokenID = (tokenData: TokenData): Uint8Array => {
   // ERC20 tokenID is just the address
   if (tokenData.tokenType === TokenType.ERC20) {
-    return arrayToByteLength(hexStringToArray(tokenData.tokenAddress), 32)
+    return arrayToByteLength(hexToBytes(tokenData.tokenAddress), 32)
   }
 
   // Other token types are the keccak256 hash of the token data
-  return bigIntToArray(
-    arrayToBigInt(
+  return bigIntToBytes(
+    bytesToBigInt(
       keccak256(
         combine([
-          bigIntToArray(BigInt(tokenData.tokenType), 32),
-          padToLength(hexStringToArray(tokenData.tokenAddress), 32, 'left'),
-          arrayToByteLength(hexStringToArray(tokenData.tokenSubID), 32),
+          bigIntToBytes(BigInt(tokenData.tokenType), 32),
+          padToLength(hexToBytes(tokenData.tokenAddress), 32, 'left'),
+          arrayToByteLength(hexToBytes(tokenData.tokenSubID), 32),
         ])
       )
     ) % SNARK_SCALAR_FIELD,
