@@ -26,7 +26,7 @@
   "homepage": "https://github.com/railgun-reloaded/merkletree-manager#readme",
   "dependencies": {
     "@railgun-reloaded/bytes": "git+https://github.com/railgun-reloaded/bytes.git#dev",
-    "@railgun-reloaded/cryptography": "git+https://github.com/railgun-reloaded/cryptography.git#chore/migrate-to-bytes-package",
+    "@railgun-reloaded/cryptography": "git+https://github.com/railgun-reloaded/cryptography.git#main",
     "@types/node": "^24.0.11"
   },
   "devDependencies": {
