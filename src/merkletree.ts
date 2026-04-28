@@ -1,7 +1,6 @@
-import { bigIntToBytes, bytesToBigInt, bytesToHex } from '@railgun-reloaded/bytes'
+import { bigIntToBytes, bytesToBigInt, bytesToHex, padBytesLeft } from '@railgun-reloaded/bytes'
 import { poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { arrayToByteLength } from './bytes'
 import { ZERO_HASH_BIGINT } from './constants'
 
 interface MerkleProof {
@@ -124,9 +123,9 @@ class MerkleTree {
   ): Uint8Array {
     return poseidonFunc([
       // @ts-expect-error - Uint8Array is allowable input
-      arrayToByteLength(left, 32),
+      padBytesLeft(left, 32),
       // @ts-expect-error - Uint8Array is allowable input
-      arrayToByteLength(right, 32),
+      padBytesLeft(right, 32),
     ]) as Uint8Array
   }
 

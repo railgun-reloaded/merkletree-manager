@@ -1,7 +1,7 @@
-import { bigIntToBytes, bytesToBigInt, hexToBytes } from '@railgun-reloaded/bytes'
+import { bigIntToBytes, bytesToBigInt, combine, hexToBytes, padBytesLeft } from '@railgun-reloaded/bytes'
 import { keccak256, poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { SNARK_SCALAR_FIELD, arrayToByteLength, combine, padToLength } from './bytes'
+import { SNARK_SCALAR_FIELD } from './bytes'
 import type { TokenData } from './types'
 import { TokenType } from './types'
 
@@ -18,7 +18,7 @@ import { TokenType } from './types'
 const getTokenID = (tokenData: TokenData): Uint8Array => {
   // ERC20 tokenID is just the address
   if (tokenData.tokenType === TokenType.ERC20) {
-    return arrayToByteLength(hexToBytes(tokenData.tokenAddress), 32)
+    return padBytesLeft(hexToBytes(tokenData.tokenAddress), 32)
   }
 
   // Other token types are the keccak256 hash of the token data
@@ -27,8 +27,8 @@ const getTokenID = (tokenData: TokenData): Uint8Array => {
       keccak256(
         combine([
           bigIntToBytes(BigInt(tokenData.tokenType), 32),
-          padToLength(hexToBytes(tokenData.tokenAddress), 32, 'left'),
-          arrayToByteLength(hexToBytes(tokenData.tokenSubID), 32),
+          padBytesLeft(hexToBytes(tokenData.tokenAddress), 32),
+          padBytesLeft(hexToBytes(tokenData.tokenSubID), 32),
         ])
       )
     ) % SNARK_SCALAR_FIELD,
@@ -52,7 +52,7 @@ const getCommitmentLeaf = (
 ) => {
   const npkArray = npk
   const tokenID = getTokenID(tokenData)
-  const valueArray = padToLength(value, 32, 'left')
+  const valueArray = padBytesLeft(value, 32)
   // @ts-expect-error - this needs to be fixed, uint8Array are applicable
   return poseidonFunc([npkArray, tokenID, valueArray])
 }

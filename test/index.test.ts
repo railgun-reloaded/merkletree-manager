@@ -70,7 +70,7 @@ describe('MerkleTree', () => {
       '20',
       '40',
     ]
-    testTree.insertLeaves(vectors.map(hexToBytes), 0)
+    testTree.insertLeaves(vectors.map((b) => hexToBytes(b)), 0)
     testTree.rebuildSparseTree()
     const proof = testTree.generateProof(hexToBytes('10'))
 
