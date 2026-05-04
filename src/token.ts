@@ -50,11 +50,8 @@ const getCommitmentLeaf = (
   tokenData: TokenData,
   value: Uint8Array
 ) => {
-  const npkArray = npk
   const tokenID = getTokenID(tokenData)
-  const valueArray = padBytesLeft(value, 32, { strict: true })
-  // @ts-expect-error - this needs to be fixed, uint8Array are applicable
-  return poseidonFunc([npkArray, tokenID, valueArray])
+  return poseidonFunc([npk, tokenID, value]) as Uint8Array
 }
 
 export { getCommitmentLeaf, getTokenID }
