@@ -18,7 +18,7 @@ import { TokenType } from './types'
 const getTokenID = (tokenData: TokenData): Uint8Array => {
   // ERC20 tokenID is just the address
   if (tokenData.tokenType === TokenType.ERC20) {
-    return padBytesLeft(hexToBytes(tokenData.tokenAddress), 32)
+    return padBytesLeft(hexToBytes(tokenData.tokenAddress), 32, { strict: true })
   }
 
   // Other token types are the keccak256 hash of the token data
@@ -27,8 +27,8 @@ const getTokenID = (tokenData: TokenData): Uint8Array => {
       keccak256(
         combine([
           bigIntToBytes(BigInt(tokenData.tokenType), 32),
-          padBytesLeft(hexToBytes(tokenData.tokenAddress), 32),
-          padBytesLeft(hexToBytes(tokenData.tokenSubID), 32),
+          padBytesLeft(hexToBytes(tokenData.tokenAddress), 32, { strict: true }),
+          padBytesLeft(hexToBytes(tokenData.tokenSubID), 32, { strict: true }),
         ])
       )
     ) % SNARK_SCALAR_FIELD,
@@ -52,7 +52,7 @@ const getCommitmentLeaf = (
 ) => {
   const npkArray = npk
   const tokenID = getTokenID(tokenData)
-  const valueArray = padBytesLeft(value, 32)
+  const valueArray = padBytesLeft(value, 32, { strict: true })
   // @ts-expect-error - this needs to be fixed, uint8Array are applicable
   return poseidonFunc([npkArray, tokenID, valueArray])
 }

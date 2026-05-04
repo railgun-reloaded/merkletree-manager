@@ -123,9 +123,9 @@ class MerkleTree {
   ): Uint8Array {
     return poseidonFunc([
       // @ts-expect-error - Uint8Array is allowable input
-      padBytesLeft(left, 32),
+      padBytesLeft(left, 32, { strict: true }),
       // @ts-expect-error - Uint8Array is allowable input
-      padBytesLeft(right, 32),
+      padBytesLeft(right, 32, { strict: true }),
     ]) as Uint8Array
   }
 
