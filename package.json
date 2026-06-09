@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Implementation of management & merkletrees used in RAILGUN.",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
     "build": "npm run lint:fix && tsc --build",
     "clean": "tsc --build --clean",
