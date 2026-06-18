@@ -1,5 +1,5 @@
-import type { MerkleProof } from './index'
-import { MerkleTree } from './index'
+import type { MerkleProof } from './index.js'
+import { MerkleTree } from './index.js'
 
 /**
  * The `MerkleHelper` class is designed to manage multiple Merkle trees, providing functionality

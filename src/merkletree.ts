@@ -1,7 +1,7 @@
 import { bigIntToBytes, bytesToBigInt, bytesToHex } from '@railgun-reloaded/bytes'
 import { poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { ZERO_HASH_BIGINT } from './constants'
+import { ZERO_HASH_BIGINT } from './constants.js'
 
 interface MerkleProof {
   element: Uint8Array;

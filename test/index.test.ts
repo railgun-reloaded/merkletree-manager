@@ -3,7 +3,7 @@ import { beforeEach, describe, it } from 'node:test'
 
 import { bytesToHex, hexToBytes } from '@railgun-reloaded/bytes'
 
-import { MerkleTree } from '../src'
+import { MerkleTree } from '../src/index.js'
 
 describe('MerkleTree', () => {
   let testTree: MerkleTree

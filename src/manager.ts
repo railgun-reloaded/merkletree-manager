@@ -1,4 +1,4 @@
-import { MerkleHelper } from './helper'
+import { MerkleHelper } from './helper.js'
 
 /**
  * The `MerkleManager` class is responsible for managing UTXO (Unspent Transaction Outputs)

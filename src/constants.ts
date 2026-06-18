@@ -1,7 +1,7 @@
 import { bytesToBigInt } from '@railgun-reloaded/bytes'
 import { keccak256 } from '@railgun-reloaded/cryptography'
 
-import { SNARK_SCALAR_FIELD } from './bytes'
+import { SNARK_SCALAR_FIELD } from './bytes.js'
 
 /**
  * Computes a zero value as a bigint by hashing the string "Railgun" using the keccak256 algorithm

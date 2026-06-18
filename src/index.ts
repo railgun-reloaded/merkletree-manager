@@ -1,2 +1,2 @@
-export * from './merkletree'
-export * from './types'
+export * from './merkletree.js'
+export * from './types.js'

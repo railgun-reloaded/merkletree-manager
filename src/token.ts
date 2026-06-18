@@ -1,9 +1,9 @@
 import { bigIntToBytes, bytesToBigInt, combine, hexToBytes, padBytesLeft } from '@railgun-reloaded/bytes'
 import { keccak256, poseidonFunc } from '@railgun-reloaded/cryptography'
 
-import { SNARK_SCALAR_FIELD } from './bytes'
-import type { TokenData } from './types'
-import { TokenType } from './types'
+import { SNARK_SCALAR_FIELD } from './bytes.js'
+import type { TokenData } from './types.js'
+import { TokenType } from './types.js'
 
 /**
  * Computes the token ID for a given TokenData object.

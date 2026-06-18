@@ -2,6 +2,7 @@
   "name": "@railgun-reloaded/merkletree-manager",
   "version": "0.0.1",
   "description": "Implementation of management & merkletrees used in RAILGUN.",
+  "type": "module",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
